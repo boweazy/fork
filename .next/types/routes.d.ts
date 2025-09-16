@@ -3,10 +3,10 @@
 
 type AppRoutes = "/"
 type AppRouteHandlerRoutes = "/api/gh-sync" | "/api/health"
-type PageRoutes = never
+type PageRoutes = "/"
 type LayoutRoutes = "/"
 type RedirectRoutes = never
-type RewriteRoutes = never
+type RewriteRoutes = "/health"
 type Routes = AppRoutes | PageRoutes | LayoutRoutes | RedirectRoutes | RewriteRoutes | AppRouteHandlerRoutes
 
 
@@ -14,6 +14,7 @@ interface ParamMap {
   "/": {}
   "/api/gh-sync": {}
   "/api/health": {}
+  "/health": {}
 }
 
 
