@@ -1,7 +1,6 @@
 name: sfs-ci-deploy
 on:
-  push:
-    branches: ['**']
+  push: { branches: ['**'] }
   pull_request:
 jobs:
   build:
@@ -12,7 +11,4 @@ jobs:
         with: { node-version: '20' }
       - run: npm ci || pnpm i --frozen-lockfile || yarn install --frozen-lockfile
       - run: npm run -s build || echo "no build script; skipping"
-  # TODO: swap to reusable workflow when ready:
-  # deploy:
-  #   uses: smartflow-systems/SmartFlowSite/.github/workflows/sfs-ci-deploy.yml@main
-  #   secrets: inherit
+# TODO: switch to reusable workflow later
