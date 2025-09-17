@@ -32,11 +32,5 @@ waitForPort = 5000
 localPort = 5000
 externalPort = 80
 
-[[ports]]
-localPort = 38755
-externalPort = 3000
-
-[deployment]
-deploymentTarget = "autoscale"
-run = ["npm", "start"]
-build = ["npm", "run", "build"]
+[nix]
+channel = "stable-25_05"
