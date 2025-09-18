@@ -8,7 +8,6 @@ git config user.email "${GIT_USER_EMAIL:-replit@smartflow.local}"
 git remote remove origin 2>/dev/null || true
 git remote add origin "$REMOTE"
 git add -A
-git commit -m "chore: sync from Replit $(date -u +%F-%T)" || echo "No changes to commit."
+git commit -m "chore: sync from Replit $(date -u +%F-%T)" || echo "No changes."
 git branch -M main
 git push -u origin main
-echo "Pushed to https://github.com/${ORG}/${REPO}"

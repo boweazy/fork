@@ -5,7 +5,7 @@ modules = ["nodejs-20", "python-3.11"]
 expertMode = true
 
 [workflows]
-runButton = "Project"
+runButton = "Shell-Replit"
 
 [[workflows.workflow]]
 name = "Project"
