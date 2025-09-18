@@ -1,57 +1,46 @@
-run = "PORT=${PORT:-3000} node server.js"
-modules = ["nodejs-20", "python-3.11"]
+#!/usr/bin/env bash
+set -euo pipefail
 
-[agent]
-expertMode = true
+# Backup current .replit
+[ -f .replit ] && cp -f .replit .replit.bak || true
 
-[workflows]
+# Pick stack automatically: Node if server.js exists, else Flask if app.py exists
+if [ -f server.js ]; then
+  # NODE minimal .replit (OVERWRITE)
+  printf '%s\n' \
+    'run = "PORT=${PORT:-3000} node server.js"' \
+    'modules = ["nodejs-20"]' \
+    '' \
+    '[nix]' \
+    'channel = "stable-25_05"' > .replit
+  echo "Configured .replit for Node (server.js)."
+elif [ -f app.py ]; then
+  # PYTHON minimal .replit (OVERWRITE)
+  printf '%s\n' \
+    'run = "pip install -r requirements.txt && python3 app.py"' \
+    'modules = ["python-3.11"]' \
+    '' \
+    '[nix]' \
+    'channel = "stable-25_05"' > .replit
+  echo "Configured .replit for Python (app.py)."
+else
+  echo "No server.js or app.py found. Open .replit in the Editor and paste one of the minimal configs."
+fi
 
-[[workflows.workflow]]
-name = "Project"
-mode = "parallel"
-author = "agent"
+echo "== Tip =="
+echo "- Ensure your server listens on \$PORT (Node: process.env.PORT; Flask: os.getenv('PORT'))."
+echo "- Press Run (Console). When it’s up, run the smoke below."
 
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "SmartFlowSite"
-
-[[workflows.workflow]]
-name = "SmartFlowSite"
-author = "agent"
-
-[workflows.workflow.metadata]
-outputType = "webview"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run dev"
-waitForPort = 5000
-
-[[workflows.workflow]]
-name = "Shell-Replit"
-mode = "sequential"
-author = 36680818
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "edit the URL, save, then hit ▶"
-
-[[ports]]
-localPort = 3000
-externalPort = 3000
-
-[[ports]]
-localPort = 5000
-externalPort = 80
-
-[[ports]]
-localPort = 40715
-externalPort = 3001
-
-[nix]
-channel = "stable-25_05"
-
-[deployment]
-deploymentTarget = "autoscale"
-run = ["npm", "run", "start"]
-build = ["npm", "run", "build"]
+# Local smoke (safe if /health missing)
+set +e
+PORT="${PORT:-3000}"
+for p in "$PORT" 3000 5000 5173 8000 8080; do
+  [ -n "$p" ] || continue
+  curl -sS -m 2 -o /dev/null -w "HEALTH(%s):%%{http_code}\n" "http://127.0.0.1:$p/health" "$p" && FOUND="$p" && break
+done
+[ -n "${FOUND:-}" ] && {
+  BASE="http://127.0.0.1:$FOUND"
+  echo "Testing $BASE"
+  curl -sS -m 6 -o /dev/null -w "HTTP %%{http_code}\n" "$BASE/health"
+  curl -sS -m 6 "$BASE/api/boost" | head -c 200; echo
+} || echo "Start the app (Run button), then re-run this smoke."
