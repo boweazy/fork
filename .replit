@@ -28,6 +28,15 @@ task = "shell.exec"
 args = "npm run dev"
 waitForPort = 5000
 
+[[workflows.workflow]]
+name = "Shell-Replit"
+mode = "sequential"
+author = 36680818
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "edit the URL, save, then hit ▶"
+
 [[ports]]
 localPort = 3000
 externalPort = 3000
