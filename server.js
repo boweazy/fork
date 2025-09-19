@@ -1,16 +1,50 @@
-import http from "node:http";
-const PORT = process.env.PORT || 3000;
-const ok = (res, body, type="text/plain") => { res.writeHead(200, {"content-type": type}); res.end(body); };
-const routes = {
-  "/":            (_req, res) => ok(res, "SmartFlowSite ✓ (emergency online)"),
-  "/api/health":  (_req, res) => ok(res, JSON.stringify({ ok:true, service:"SmartFlowSite", via:"emergency", ts:Date.now() }), "application/json"),
-  "/api/gh-sync": (req, res) => {
-    if (req.method === "POST") { let d=""; req.on("data",c=>d+=c); req.on("end",()=> ok(res, JSON.stringify({ ok:true, route:"gh-sync", method:"POST", body:d?JSON.parse(d):{} }), "application/json")); }
-    else ok(res, JSON.stringify({ ok:true, route:"gh-sync", method:"GET" }), "application/json");
-  },
+// Production server.js for Replit deployment
+import { spawn } from 'child_process';
+const PORT = process.env.PORT || 5000;
+
+console.log(`Starting SmartFlowSite production server on port ${PORT}`);
+
+// Start the Express TypeScript server using Node with tsx loader (production-safe)
+const serverProcess = spawn(process.execPath, [
+  '--loader', 'tsx',
+  'server/index.ts'
+], {
+  stdio: 'inherit',
+  env: { 
+    ...process.env, 
+    PORT: PORT, 
+    NODE_ENV: 'production' 
+  }
+});
+
+// Handle server process errors
+serverProcess.on('error', (error) => {
+  console.error(`Server startup error: ${error}`);
+  process.exit(1);
+});
+
+serverProcess.on('exit', (code, signal) => {
+  console.log(`Server process exited with code ${code} and signal ${signal}`);
+  process.exit(code || 0);
+});
+
+// Handle graceful shutdown with proper signal forwarding
+const shutdown = (signal) => {
+  console.log(`Received ${signal}, shutting down gracefully`);
+  serverProcess.kill(signal);
+  
+  // Wait for server to shutdown, then exit
+  serverProcess.on('exit', () => {
+    process.exit(0);
+  });
+  
+  // Force exit after timeout
+  setTimeout(() => {
+    console.log('Force killing server process');
+    serverProcess.kill('SIGKILL');
+    process.exit(1);
+  }, 10000);
 };
-// Emergency server disabled - Next.js handles all traffic
-console.log(`EMERGENCY SERVER DISABLED - Next.js running on port 5000`);
-// http.createServer((req, res) => (routes[req.url] || routes["/"])(req, res)).listen(PORT, () => {
-//   console.log(`EMERGENCY ONLINE on :${PORT}`);
-// });
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
