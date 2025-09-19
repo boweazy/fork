@@ -52,7 +52,7 @@ expertMode = true
 [deployment]
 deploymentTarget = "autoscale"
 run = ["node", "server.js"]
-build = ["bash", "-c", "npm ci --include=dev && npm run build"]
+build = ["bash", "-c", "npm ci && npm run build"]
 
 [[ports]]
 localPort = 5000
