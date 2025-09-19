@@ -1,7 +1,9 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { execFile } from 'child_process';
 import rateLimit from 'express-rate-limit';
-const app = express(); app.use(express.json());
+
+const app = express();
+app.use(express.json());
 
 // Rate limit for /gh-sync: 5 requests per 5 minutes per IP
 const syncLimiter = rateLimit({
@@ -11,7 +13,7 @@ const syncLimiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
-app.post('/gh-sync', syncLimiter, (req, res) => {
+app.post('/gh-sync', syncLimiter, (req: Request, res: Response) => {
   if ((req.get('authorization')||'') !== `Bearer ${process.env.SYNC_TOKEN}`)
     return res.status(401).json({ok:false});
   const ref = (req.body?.ref as string) || 'main';
@@ -20,5 +22,5 @@ app.post('/gh-sync', syncLimiter, (req, res) => {
         : res.json({ok:true, ref}));
 });
 
-const PORT = Number(process.env.PORT)||3000;
+const PORT = Number(process.env.PORT)||5000;
 app.listen(PORT, '0.0.0.0', () => console.log(`/gh-sync on ${PORT}`));

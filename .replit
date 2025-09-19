@@ -16,19 +16,19 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "SmartFlow Flask Production"
+args = "Development Server"
 
 [[workflows.workflow]]
-name = "SmartFlow Flask Production"
+name = "Development Server"
 author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "gunicorn -w 2 -t 60 -b 0.0.0.0:5000 app:app"
-waitForPort = 5000
 
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
+waitForPort = 5000
 
 [[ports]]
 localPort = 3000
@@ -39,12 +39,8 @@ localPort = 5000
 externalPort = 80
 
 [[ports]]
-localPort = 5001
+localPort = 42097
 externalPort = 3000
-
-[[ports]]
-localPort = 5002
-externalPort = 3001
 
 [deployment]
 deploymentTarget = "cloudrun"
