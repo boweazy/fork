@@ -58,5 +58,9 @@ build = ["bash", "-c", "npm ci && npm run build"]
 localPort = 5000
 externalPort = 80
 
+[[ports]]
+localPort = 36889
+externalPort = 3000
+
 [nix]
 channel = "stable-25_05"
