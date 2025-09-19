@@ -6,7 +6,7 @@
     "sfs:diag": "bash scripts/sfs-diagnose.sh",
     "sfs:smoke": "node src/sfs-smoke.js",
     "build": "vite build --outDir client/dist",
-    "start": "NODE_ENV=production tsx server/index.ts",
+    "start": "node server.js",
     "dev": "NODE_ENV=development tsx server/index.ts",
     "lint": "next lint || true",
     "preview": "npm --prefix client run preview"
