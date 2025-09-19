@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 set -euo pipefail
 GH_ORG=smartflow-systems
 GH_REPO=SmartFlowSite
@@ -7,7 +6,7 @@ MSG="${MSG:-chore: quick save $(date -u +%FT%TZ)}"
 # 1) Try to read PAT from env (Replit secrets expose env vars)
 PAT="${SFS_PAT:-${GH_PAT:-${GITHUB_TOKEN:-${GITHUB_PAT:-}}}}"
 if [ -z "${PAT}" ]; then
-  read -r -p "Paste GitHub PAT (hidden): " -s PAT; echo
+  read -p "Paste GitHub PAT (hidden): " -s PAT; echo
 fi
 
 # 2) Git identity & remote

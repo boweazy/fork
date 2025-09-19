@@ -108,5 +108,3 @@ cat > docs/deploy.md <<'EOF'
 - Change build command/output directory:
   ```bash
   tools/deploy-config.sh 'npm run build' dist
-
-EOF

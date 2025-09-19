@@ -1,23 +1,17 @@
 import express from 'express';
-import { attachDevProxy } from "./dev-proxy.js";
-import { attachStatic } from "./serve-static.js";
 import { execFile } from 'child_process';
-import boost from "./routes/boost.js";
+import rateLimit from 'express-rate-limit';
+const app = express(); app.use(express.json());
 
-const app = express();
-app.use(express.json());
+// Rate limit for /gh-sync: 5 requests per 5 minutes per IP
+const syncLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000, // 5 minutes
+  max: 5, // limit each IP to 5 requests per windowMs
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
 
-// Attach dev proxy for backend routes (/api, /status, /data)
-attachDevProxy(app);
-
-// Use boost router for /health and /api/boost endpoints
-app.use(boost);
-
-// Attach static file serving for SPA
-attachStatic(app);
-
-// Simple rate limiting for /gh-sync
-app.post('/gh-sync', (req, res) => {
+app.post('/gh-sync', syncLimiter, (req, res) => {
   if ((req.get('authorization')||'') !== `Bearer ${process.env.SYNC_TOKEN}`)
     return res.status(401).json({ok:false});
   const ref = (req.body?.ref as string) || 'main';
@@ -26,5 +20,5 @@ app.post('/gh-sync', (req, res) => {
         : res.json({ok:true, ref}));
 });
 
-const PORT = Number(process.env.PORT)||5000;
-app.listen(PORT, '0.0.0.0', () => console.log(`SmartFlowSite Express server running on ${PORT}`));
+const PORT = Number(process.env.PORT)||3000;
+app.listen(PORT, '0.0.0.0', () => console.log(`/gh-sync on ${PORT}`));

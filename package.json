@@ -1,36 +1,19 @@
 {
-  "name": "sfs-replit-smoke",
+  "name": "smartflowsite-landing smartflow-store-api",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "sfs:diag": "bash scripts/sfs-diagnose.sh",
-    "sfs:smoke": "node src/sfs-smoke.js",
-    "build": "vite build --outDir client/dist",
-    "start": "node server.js",
     "dev": "NODE_ENV=development tsx server/index.ts",
-    "lint": "next lint || true",
-    "preview": "npm --prefix client run preview"
-  },
-  "devDependencies": {
-    "@types/express": "^5.0.3",
-    "@types/node": "^24.5.0",
-    "@types/react": "^19.1.13",
-    "http-proxy-middleware": "^3.0.5",
-    "next": "^15.5.3",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "typescript": "^5.9.2"
+    "lint": "echo 'no lint configured'",
+    "build": "echo 'no build step' && exit 0",
+    "test": "echo 'no tests' && exit 0"
   },
   "dependencies": {
-    "@tailwindcss/postcss": "^4.1.13",
-    "autoprefixer": "^10.4.21",
-    "express": "^5.1.0",
-    "express-rate-limit": "^8.1.0",
-    "tailwindcss": "^4.1.13",
-    "tsx": "^4.20.5",
-    "vite": "^7.1.5"
+    "express-rate-limit": "^8.1.0"
   },
+  "devDependencies": {},
   "engines": {
-    "node": ">=20"
+    "node": ">=18"
   }
 }
