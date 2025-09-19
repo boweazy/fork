@@ -1,18 +1,17 @@
-run = "PORT=${PORT:-5000} node server.js"
-
+run = "PORT=${PORT:-3000} node server.js"
 modules = ["nodejs-20"]
 
 [workflows]
 runButton = "SFS Smoke"
 
 [[workflows.workflow]]
-name = "SmartFlowSite"
+name = "Project"
 mode = "sequential"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npm run dev"
-waitForPort = 5000
+waitForPort = 3000
 
 [[workflows.workflow]]
 name = "SFS Smoke"
@@ -24,6 +23,22 @@ args = """
 curl -fsS -o /dev/null -w 'HEALTH:%{http_code}
 ' http://127.0.0.1:$PORT/health && echo '---' && curl -fsS http://127.0.0.1:$PORT/api/boost | head -c 300 && echo && curl -fsS -o /dev/null -w 'TRAVERSAL:%{http_code}
 ' http://127.0.0.1:$PORT/data/../app.py"""
+
+[[workflows.workflow]]
+name = "Backup Project"
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "TS=$(date +%Y%m%d-%H%M%S); tar --exclude=node_modules --exclude=.git -czf /mnt/data/sfs-backup-$TS.tgz . && echo /mnt/data/sfs-backup-$TS.tgz"
+
+[[ports]]
+localPort = 3000
+externalPort = 3000
+
+[[ports]]
+localPort = 5000
+externalPort = 80
 
 [agent]
 expertMode = true
