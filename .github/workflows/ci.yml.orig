@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-          submodules: recursive
+      with:
+        fetch-depth: 0
+        submodules: recursive
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -23,17 +23,3 @@ jobs:
           nohup gunicorn -w 2 -b 0.0.0.0:5000 app:app &
           sleep 5
       - run: curl -f http://127.0.0.1:5000/health
-
-  codeql:
-    runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: github/codeql-action/init@v3
-        with:
-          languages: ['javascript', 'python']
-      - uses: github/codeql-action/autobuild@v3
-      - uses: github/codeql-action/analyze@v3
