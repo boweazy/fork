@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "NODE_ENV=development tsx server/index.ts",
     "lint": "echo 'no lint configured'",
     "build": "echo 'no build step' && exit 0",
     "test": "echo 'no tests' && exit 0"
