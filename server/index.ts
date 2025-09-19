@@ -18,9 +18,9 @@ app.post('/gh-sync', syncLimiter, (req: Request, res: Response) => {
     return res.status(401).json({ok:false});
   const ref = (req.body?.ref as string) || 'main';
   execFile('bash', ['scripts/sync.sh', ref], (err, out, errout) =>
-    err ? res.status(500).json({ok:false, err:String(errout||err)})
+    err ? res.status(500).json({ok:false, err:(errout||err).toString()})
         : res.json({ok:true, ref}));
 });
 
-const PORT = Number(process.env.PORT)||5000;
+const PORT = +(process.env.PORT || 5000);
 app.listen(PORT, '0.0.0.0', () => console.log(`/gh-sync on ${PORT}`));
