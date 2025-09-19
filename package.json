@@ -23,8 +23,10 @@
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.13",
+    "autoprefixer": "^10.4.21",
     "express": "^5.1.0",
     "express-rate-limit": "^8.1.0",
+    "tailwindcss": "^4.1.13",
     "tsx": "^4.20.5",
     "vite": "^7.1.5"
   },
