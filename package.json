@@ -10,9 +10,11 @@
     "test": "echo 'no tests' && exit 0"
   },
   "dependencies": {
-    "express-rate-limit": "^8.1.0"
+    "@types/node": "^24.5.2",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
+    "tsx": "^4.20.5"
   },
-  "devDependencies": {},
   "engines": {
     "node": ">=18"
   }
